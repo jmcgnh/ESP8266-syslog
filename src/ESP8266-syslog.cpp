@@ -3,13 +3,22 @@
 #include <wifi_modl.h>
 #include <secretdata.h>
 #include <Wire.h>
+#include <Tlog.h>
 #include <map>
+
+#include <WebSerialStream.h>
+WebSerialStream webSerialStream = WebSerialStream();
+
+#ifdef SYSLOG_HOST
+#include <SyslogStream.h>
+SyslogStream syslogStream = SyslogStream();
+#endif
 
 // Identification
 
 const char vfname[] = __FILE__;
 const char vtimestamp[] = __DATE__ " " __TIME__;
-String versionstring = "20230826.0230.1";
+String versionstring = "20230902.2225.1";
 String myHostname = "weather26";
 unsigned long needident = 1;
 
@@ -21,16 +30,28 @@ void setup() {
   Serial.println("Booting");
 
   wifi_setup();
+
+#ifdef SYSLOG_HOST
+  syslogStream.setDestination(SYSLOG_HOST);
+  syslogStream.setRaw(false); // whether or not the syslog server is a modern(ish) unix.
+#ifdef SYSLOG_PORT
+  syslogStream.setPort(SYSLOG_PORT);
+#endif
+
+  const std::shared_ptr<LOGBase> syslogStreamPtr = std::make_shared<SyslogStream>(syslogStream);
+  Log.addPrintStream(syslogStreamPtr);
+#endif
+  Log.addPrintStream(std::make_shared<WebSerialStream>(webSerialStream));
  
   // Identification
-  Serial.println();
-  Serial.print("file: ");
-  Serial.println(vfname);
-  Serial.print("timestamp (local time): ");
-  Serial.println(vtimestamp);
-  Serial.println(versionstring);
-  Serial.println("https://gitea.jmcg.net/jmcg/WeatherStation06");
-  Serial.println();
+  Log.println();
+  Log.print("file: ");
+  Log.println(vfname);
+  Log.print("timestamp (local time): ");
+  Log.println(vtimestamp);
+  Log.println(versionstring);
+  Log.println("https://gitea.jmcg.net/jmcg/WeatherStation06");
+  Log.println();
 
   blink_setup();
  }
@@ -40,14 +61,14 @@ void loop() {
   if( needident){
     needident=0;
     // repeat identification occasionally
-    Serial.println();
-    Serial.print("file: ");
-    Serial.println(vfname);
-    Serial.print("timestamp (local time): ");
-    Serial.println(vtimestamp);
-    Serial.println(versionstring);
-    Serial.println("https://github.com/jmcgnh/ESP8266-syslog");
-    Serial.println();
+    Log.println();
+    Log.print("file: ");
+    Log.println(vfname);
+    Log.print("timestamp (local time): ");
+    Log.println(vtimestamp);
+    Log.println(versionstring);
+    Log.println("https://github.com/jmcgnh/ESP8266-syslog");
+    Log.println();
   }
   
   currentMillis = millis();
