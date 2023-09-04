@@ -79,6 +79,8 @@ if( wifi_disconnected)
       {
         wifiMulti.run();
       }
+
+  Serial.println(WiFi.localIP());
   }
   // Omit OTA stuff for now...
 }

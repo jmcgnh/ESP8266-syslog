@@ -3,6 +3,8 @@
 #include <wifi_modl.h>
 #include <secretdata.h>
 #include <Wire.h>
+#include <Syslog.h>
+#include <WiFiUDP.h>
 #include <map>
 
 // Identification
@@ -14,6 +16,18 @@ String myHostname = "weather26";
 unsigned long needident = 1;
 
 unsigned long currentMillis;
+
+// Syslog naive setup begins here
+#define SYSLOG_SERVER "10.200.200.215"
+#define SYSLOG_PORT 5514
+
+// This device info
+#define DEVICE_HOSTNAME "weather-16"
+#define APP_NAME "app123"
+
+WiFiUDP udpClient;
+Syslog syslog(udpClient, SYSLOG_PROTO_IETF);
+
 
 void setup() {
   Serial.begin(115200);
@@ -33,6 +47,17 @@ void setup() {
   Serial.println();
 
   blink_setup();
+
+  // setting up syslog
+  // prepare syslog configuration here (can be anywhere before first call of 
+	// log/logf method)
+  syslog.server(SYSLOG_SERVER, SYSLOG_PORT);
+  syslog.deviceHostname(DEVICE_HOSTNAME);
+  syslog.appName(APP_NAME);
+  syslog.defaultPriority(LOG_KERN);
+
+  syslog.log(LOG_INFO, "setup complete");
+  Serial.println("syslog setup complete");
  }
 
 void loop() {
