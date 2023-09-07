@@ -11,14 +11,14 @@
 
 const char vfname[] = __FILE__;
 const char vtimestamp[] = __DATE__ " " __TIME__;
-String versionstring = "20230826.0230.1";
-String myHostname = "weather26";
+String versionstring = "20230906.2225.1";
+String myHostname = "weather-16";
 unsigned long needident = 1;
 
 unsigned long currentMillis;
 
 // Syslog naive setup begins here
-#define SYSLOG_SERVER "10.200.200.215"
+#define SYSLOG_SERVER "syslog5514.jmcg.net"
 #define SYSLOG_PORT 5514
 
 // This device info
