@@ -11,9 +11,10 @@
 
 const char vfname[] = __FILE__;
 const char vtimestamp[] = __DATE__ " " __TIME__;
-String versionstring = "20230906.2225.1";
+String versionstring = "20230907.0105.1";
 String myHostname = "weather-16";
-unsigned long needident = 1;
+unsigned long nextident = 0;
+unsigned long indentinterval = 20000;
 
 unsigned long currentMillis;
 
@@ -61,9 +62,10 @@ void setup() {
  }
 
 void loop() {
-
-  if( needident){
-    needident=0;
+  currentMillis = millis();
+ 
+  if( currentMillis > nextident){
+    nextident = currentMillis + indentinterval;
     // repeat identification occasionally
     Serial.println();
     Serial.print("file: ");
@@ -75,7 +77,6 @@ void loop() {
     Serial.println();
   }
   
-  currentMillis = millis();
   wifi_handler();
   blink_handler();
 }
