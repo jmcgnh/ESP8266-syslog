@@ -45,6 +45,7 @@ void wifi_setup()
       Serial.println(WiFi.SSID(i));
     }
   wifiMulti.run();
+  Serial.println(WiFi.localIP().toString());
 
   // Omit OTA stuff for now...
 }
@@ -80,7 +81,7 @@ if( wifi_disconnected)
         wifiMulti.run();
       }
 
-  Serial.println(WiFi.localIP());
+   Serial.println(WiFi.localIP().toString());
   }
   // Omit OTA stuff for now...
 }
