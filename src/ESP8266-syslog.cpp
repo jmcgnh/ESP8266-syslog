@@ -3,6 +3,7 @@
 #include <wifi_modl.h>
 #include <secretdata.h>
 #include <Wire.h>
+#define ENABLE_DEBUG_PING
 #include <ESP8266Ping.h>
 #include <map>
 
