@@ -11,8 +11,8 @@
 
 const char vfname[] = __FILE__;
 const char vtimestamp[] = __DATE__ " " __TIME__;
-String versionstring = "20230907.0105.1";
-String myHostname = "weather-16";
+const char versionstring[] = "20230907.0135.1";
+const char myHostname[] = "weather-16";
 unsigned long nextident = 0;
 unsigned long indentinterval = 20000;
 
@@ -27,7 +27,7 @@ unsigned long currentMillis;
 #define APP_NAME "app123"
 
 WiFiUDP udpClient;
-Syslog syslog(udpClient, SYSLOG_PROTO_IETF);
+Syslog syslog(udpClient, SYSLOG_PROTO_BSD);
 
 
 void setup() {
@@ -55,10 +55,10 @@ void setup() {
   syslog.server(SYSLOG_SERVER, SYSLOG_PORT);
   syslog.deviceHostname(DEVICE_HOSTNAME);
   syslog.appName(APP_NAME);
-  syslog.defaultPriority(LOG_KERN);
+  syslog.defaultPriority(LOG_LOCAL1);
 
-  syslog.log(LOG_INFO, "setup complete");
-  Serial.println("syslog setup complete");
+  syslog.log(LOG_INFO, F("setup complete"));
+  Serial.println(F("syslog setup complete"));
  }
 
 void loop() {
@@ -75,6 +75,12 @@ void loop() {
     Serial.println(versionstring);
     Serial.println("https://github.com/jmcgnh/ESP8266-syslog");
     Serial.println();
+    // now do the same for syslog
+    syslog.logf(LOG_INFO, "file: %s", vfname );
+    syslog.logf(LOG_INFO, "timestamp: %s (local time)", vtimestamp);
+    syslog.logf(LOG_INFO, "versionstring: %s", versionstring);
+    syslog.logf(LOG_INFO, "link url: https://github.com/jmcgnh/ESP8266-syslog");
+
   }
   
   wifi_handler();
