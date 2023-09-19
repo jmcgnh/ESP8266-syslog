@@ -6,6 +6,7 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WiFiMulti.h>
 #include <secretdata.h>
+#include <blink_modl.h>
 #include <map>
 
 // OTA variables
@@ -83,6 +84,6 @@ if( wifi_disconnected)
       }
    Serial.print("local IP addr: ");
    Serial.println(WiFi.localIP().toString());
-  }
+   }
   // Omit OTA stuff for now...
 }

@@ -9,7 +9,7 @@ const int led = LED_BUILTIN; // ESP8266 Pin to which onboard LED is connected
 int ledState = LED_ON; // initial ledState
 int ledSeqPos = 0;     // blink pattern position counter
 // blink pattern: 1L - 2 - 1 - 5 - 1L - 2 - 1  - 5 ...
-const int blinkSeq[] = {
+const int blinkSeqNormal[] = {
     1000, 100, // 1 long
     800,  1,  // 2 short
     250,  1,
@@ -21,6 +21,21 @@ const int blinkSeq[] = {
     250,  1,
  
     0, 0}; // sentinal for end of sequence
+const int blinkSeqSOS[] = {
+    2000, 1, // 3 short
+    250, 1,
+    250, 1,
+    700, 30, // 3 long
+    500, 30,
+    500, 30,
+    700, 1, // 3 short
+    250, 1,
+    250, 1,
+
+    0, 0}; // sentinal for end of sequence
+
+int *blinkSeq = (int *) blinkSeqSOS;
+
 unsigned long nextLedTransition = 0;
 unsigned long blinkseqcount = 0;
 
@@ -47,7 +62,10 @@ void blink_handler()
                     ledSeqPos = 0;
                 }
         }
-
-
 }
 
+void blink_change( const int *seq) {
+    ledSeqPos = 0;
+    blinkSeq = (int *) seq;
+    ledState = LED_ON;
+}
