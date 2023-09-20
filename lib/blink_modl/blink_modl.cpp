@@ -12,13 +12,13 @@ int ledSeqPos = 0;     // blink pattern position counter
 const int blinkSeqNormal[] = {
     1000, 100, // 1 long
     800,  1,  // 2 short
-    250,  1,
-    500,  1,  // then 1 short
-    500,  1,  // then 5 short
-    250,  1,
-    250,  1,
-    250,  1,
-    250,  1,
+    300,  1,
+    800,  1,  // then 1 short
+    800,  1,  // then 5 short
+    300,  1,
+    300,  1,
+    300,  1,
+    300,  1,
  
     0, 0}; // sentinal for end of sequence
 const int blinkSeqSOS[] = {

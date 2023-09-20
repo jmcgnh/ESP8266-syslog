@@ -11,7 +11,7 @@
 
 const char vfname[] = __FILE__;
 const char vtimestamp[] = __DATE__ " " __TIME__;
-const char versionstring[] = "20230919.0440.1";
+const char versionstring[] = "20230919.2150.2";
 const char myHostname[] = "weather-16";
 unsigned long nextident = 0;
 unsigned long indentinterval = 20000;
@@ -59,7 +59,7 @@ void setup() {
 
   syslog.log(LOG_INFO, F("setup complete"));
   Serial.println(F("syslog setup complete"));
-  blink_change( blinkSeqNormal);
+  // blink_change( blinkSeqNormal);
  }
 
 void loop() {

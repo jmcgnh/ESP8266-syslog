@@ -48,6 +48,7 @@ void wifi_setup()
   wifiMulti.run();
   Serial.print("local IP addr: ");
   Serial.println(WiFi.localIP().toString());
+  blink_change(blinkSeqNormal);
 
   // Omit OTA stuff for now...
 }
@@ -75,6 +76,7 @@ if( wifi_disconnected)
       // delay(1); // supposedly required, but perhaps apocraphal
       wifi_disconnected = 0;
       Serial.println("Exit modem sleep mode");
+      blink_change(blinkSeqSOS);
 
       wifistatus = WiFi.status();
 
@@ -84,6 +86,7 @@ if( wifi_disconnected)
       }
    Serial.print("local IP addr: ");
    Serial.println(WiFi.localIP().toString());
+   blink_change(blinkSeqNormal);
    }
   // Omit OTA stuff for now...
 }
