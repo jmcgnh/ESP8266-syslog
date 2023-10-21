@@ -7,6 +7,7 @@
 #include <ESP8266WiFiMulti.h>
 #include <secretdata.h>
 #include <blink_modl.h>
+#include <ident_modl.h>
 #include <map>
 
 // OTA variables
