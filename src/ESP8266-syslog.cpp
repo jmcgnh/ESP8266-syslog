@@ -18,8 +18,8 @@ SyslogStream syslogStream = SyslogStream();
 
 const char vfname[] = __FILE__;
 const char vtimestamp[] = __DATE__ " " __TIME__;
-String versionstring = "20230907.0005.1";
-String myHostname = "weather26";
+String versionstring = "20240205.0345.1";
+String myHostname = "testbed9D";
 unsigned long needident = 1;
 
 unsigned long currentMillis;
