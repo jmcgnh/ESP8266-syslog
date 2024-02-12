@@ -18,13 +18,19 @@ SyslogStream syslogStream = SyslogStream();
 
 const char vfname[] = __FILE__;
 const char vtimestamp[] = __DATE__ " " __TIME__;
-String versionstring = "20240205.0345.1";
-String myHostname = "testbed9D";
+const char projdir[] = PROJECT_DIR;
+const char branch[] = BRANCH;
+const char ltimestamp[] = TIMESTAMP;
+const char commit_hash[] = COMMIT_HASH;
+const char commit_comment[] = LAST_COMMIT_COMMENT;
+const char project_url[] = PROJECT_URL;
+String myHostname = "weather26";
 unsigned long needident = 1;
 
 unsigned long currentMillis;
 
-void setup() {
+void setup()
+{
   Serial.begin(115200);
   Serial.setDebugOutput(true);
   Serial.println("Booting");
@@ -42,35 +48,52 @@ void setup() {
   Log.addPrintStream(syslogStreamPtr);
 #endif
   Log.addPrintStream(std::make_shared<WebSerialStream>(webSerialStream));
- 
+
   // Identification
   Log.println();
   Log.print("file: ");
   Log.println(vfname);
-  Log.print("timestamp (local time): ");
-  Log.println(vtimestamp);
-  Log.println(versionstring);
-  Log.println("https://gitea.jmcg.net/jmcg/WeatherStation06");
+  Log.print("Project dir: ");
+  Log.println(projdir);
+  Log.print("current branch: ");
+  Log.print(branch);
+  Log.print("  commit: ");
+  Log.println(commit_hash);
+  Log.println(commit_comment);
+  Log.print("compile timestamp: ");
+  Log.println(ltimestamp);
+  Log.print("Project URL: ");
+  Log.println(project_url);
   Log.println();
 
   blink_setup();
- }
+}
 
-void loop() {
+void loop()
+{
 
-  if( needident){
-    needident=0;
+  if (needident)
+  {
+    needident = 0;
     // repeat identification occasionally
+    // Identification
     Log.println();
     Log.print("file: ");
     Log.println(vfname);
-    Log.print("timestamp (local time): ");
-    Log.println(vtimestamp);
-    Log.println(versionstring);
-    Log.println("https://github.com/jmcgnh/ESP8266-syslog");
+    Log.print("Project dir: ");
+    Log.println(projdir);
+    Log.print("current branch: ");
+    Log.print(branch);
+    Log.print("  commit: ");
+    Log.println(commit_hash);
+    Log.println(commit_comment);
+    Log.print("compile timestamp: ");
+    Log.println(ltimestamp);
+    Log.print("Project URL: ");
+    Log.println(project_url);
     Log.println();
   }
-  
+
   currentMillis = millis();
   wifi_handler();
   blink_handler();
