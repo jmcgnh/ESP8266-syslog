@@ -1,7 +1,9 @@
 # secrets do not go to git
 lib/secrets/*.cpp
 lib/secrets/*.sh
-
+lib/secrets/syslog_secrets.h
+gitstatus.h
+buildstatus.h
 
 *.log
 

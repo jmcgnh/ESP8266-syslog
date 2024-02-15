@@ -10,10 +10,24 @@ echo BRANCH $(git branch --show-current) >>buildflags.log
 echo >>buildflags.log
 printenv >>buildflags.log
 
-echo \'-D BRANCH=\"$(git branch --show-current)\"\'
-echo \'-D COMMIT_HASH=\"$(git log -1 --format=%h)\"\'
-echo \'-D LAST_COMMIT_COMMENT=\"$(git show --format=%s -s)\"\'
-echo \'-D PROJECT_URL=\"$(git config remote.origin.url)\"\'
-echo \'-D PROJECT_DIR=\"$(pwd)\"\'
+# echo \'-D BRANCH=\"$(git branch --show-current)\"\'
+# echo \'-D COMMIT_HASH=\"$(git log -1 --format=%h)\"\'
+# echo \'-D LAST_COMMIT_COMMENT=\"$(git show --format=%s -s)\"\'
+# echo \'-D PROJECT_URL=\"$(git config remote.origin.url)\"\'
+
+# echo \'-D PROJECT_DIR=\"$(pwd)\"\'
+# TIMESTAMP=$(date +"%Y-%m-%d %H:%M")
+# echo \'-D TIMESTAMP=\"$TIMESTAMP\"\'
+
+
+echo '#define BRANCH "'$(git branch --show-current)\"  >include/gitstatus.log
+echo '#define COMMIT_HASH "'$(git log -1 --format=%h)\" >>include/gitstatus.log
+echo '#define LAST_COMMIT_COMMENT "'$(git show --format=%s -s)\" >>include/gitstatus.log
+echo '#define PROJECT_URL "'$(git config remote.origin.url)\" >>include/gitstatus.log
+if [  ! -e include/gistatus.h ] || [ ! $(diff -q include/gitstatus.h include/gitstatus.log >/dev/null) ]; then
+    mv include/gitstatus.log include/gitstatus.h
+fi
+
+echo '#define PROJECT_DIR "'$(pwd)\" > include/buildstatus.h
 TIMESTAMP=$(date +"%Y-%m-%d %H:%M")
-echo \'-D TIMESTAMP=\"$TIMESTAMP\"\'
+echo '#define TIMESTAMP "'$TIMESTAMP\" >>include/buildstatus.h
