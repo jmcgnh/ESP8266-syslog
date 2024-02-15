@@ -2,6 +2,9 @@
 #include <blink_modl.h>
 #include <wifi_modl.h>
 #include <secretdata.h>
+#include <syslog_secrets.h>
+#include <gitstatus.h>
+#include <buildstatus.h>
 #include <Wire.h>
 #include <Tlog.h>
 #include <map>
@@ -43,11 +46,7 @@ void setup()
 #ifdef SYSLOG_PORT
   syslogStream.setPort(SYSLOG_PORT);
 #endif
-
-  const std::shared_ptr<LOGBase> syslogStreamPtr = std::make_shared<SyslogStream>(syslogStream);
-  Log.addPrintStream(syslogStreamPtr);
 #endif
-  Log.addPrintStream(std::make_shared<WebSerialStream>(webSerialStream));
 
   // Identification
   Log.println();
@@ -97,4 +96,13 @@ void loop()
   currentMillis = millis();
   wifi_handler();
   blink_handler();
+}
+
+void TlogConnectAction()
+{
+#ifdef SYSLOG_HOST
+  const std::shared_ptr<LOGBase> syslogStreamPtr = std::make_shared<SyslogStream>(syslogStream);
+  Log.addPrintStream(syslogStreamPtr);
+#endif
+  Log.addPrintStream(std::make_shared<WebSerialStream>(webSerialStream));
 }
