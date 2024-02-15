@@ -6,6 +6,7 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WiFiMulti.h>
 #include <secretdata.h>
+#include <syslog_secrets.h>
 #include <map>
 
 // OTA variables
@@ -24,15 +25,16 @@ WiFiEventHandler stationGotIPHandler;
 WiFiEventHandler stationDisconnectedHandler;
 
 // forward declarations
-void onStationConnected(const WiFiEventStationModeConnected& evt);
-void onStationGotIP(const WiFiEventStationModeGotIP& evt);
-void onStationDisconnected(const WiFiEventStationModeDisconnected& evt);
+void onStationConnected(const WiFiEventStationModeConnected &evt);
+void onStationGotIP(const WiFiEventStationModeGotIP &evt);
+void onStationDisconnected(const WiFiEventStationModeDisconnected &evt);
+extern void TlogConnectAction();
 
 void wifi_setup()
 {
   int wifistatus;
 
-  // set up event handlers early, before checking to see if WiFi already autoconnected
+  // set up event handlers early, before checking to see if WiFi already connected
   stationConnectedHandler = WiFi.onStationModeConnected(&onStationConnected);
   stationGotIPHandler = WiFi.onStationModeGotIP(&onStationGotIP);
   stationDisconnectedHandler = WiFi.onStationModeDisconnected(&onStationDisconnected);
@@ -41,13 +43,12 @@ void wifi_setup()
 
   if (wifistatus == WL_CONNECTED)
   {
-   // perform the main action of the GotIPHandler in this case
-   //// ....
+    TlogConnectAction();
     return; // if already connected, skip the rest of the steps
   }
 
   WiFi.mode(WIFI_STA);
-  // WiFi.enableInsecureWEP(true); // needed since we still run WEP at home
+  // WiFi.enableInsecureWEP(true); // no longer exlusively running WEP at home
 
   // choose faster reconnect over physical device security
   WiFi.persistent(true);
@@ -77,22 +78,30 @@ void wifi_setup()
 
 void wifi_handler()
 {
-  // nothing to do here, since event handlers should be handlin it
-  // No longer interested in putting WiFi to sleep while we do other actions
-  // Omit OTA stuff for now...
+  if (wifi_disconnected)
+  {
+    wifiMulti.run();
+  }
 }
 
-void onStationConnected(const WiFiEventStationModeConnected& evt) {
+void onStationConnected(const WiFiEventStationModeConnected &evt)
+{
   Serial.print("Station connected to SSID: ");
   Serial.println(evt.ssid);
+  wifi_disconnected = 0;
 }
 
-void onStationGotIP(const WiFiEventStationModeGotIP& evt) {
+void onStationGotIP(const WiFiEventStationModeGotIP &evt)
+{
   Serial.print("Station IP assigned: ");
   Serial.println(evt.ip.toString());
+
+  TlogConnectAction();
 }
 
-void onStationDisconnected(const WiFiEventStationModeDisconnected& evt) {
+void onStationDisconnected(const WiFiEventStationModeDisconnected &evt)
+{
   Serial.print("Station disconnected: ");
   Serial.println(evt.reason);
+  wifi_disconnected = 1;
 }
