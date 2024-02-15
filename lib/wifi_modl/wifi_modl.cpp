@@ -18,32 +18,58 @@ int wifi_disconnected = 0;
 
 ESP8266WiFiMulti wifiMulti;
 
+// plan for event-driven wifi handling
+WiFiEventHandler stationConnectedHandler;
+WiFiEventHandler stationGotIPHandler;
+WiFiEventHandler stationDisconnectedHandler;
+
+// forward declarations
+void onStationConnected(const WiFiEventStationModeConnected& evt);
+void onStationGotIP(const WiFiEventStationModeGotIP& evt);
+void onStationDisconnected(const WiFiEventStationModeDisconnected& evt);
+
 void wifi_setup()
 {
-  WiFi.mode(WIFI_AP_STA);
+  int wifistatus;
+
+  // set up event handlers early, before checking to see if WiFi already autoconnected
+  stationConnectedHandler = WiFi.onStationModeConnected(&onStationConnected);
+  stationGotIPHandler = WiFi.onStationModeGotIP(&onStationGotIP);
+  stationDisconnectedHandler = WiFi.onStationModeDisconnected(&onStationDisconnected);
+
+  wifistatus = WiFi.status();
+
+  if (wifistatus == WL_CONNECTED)
+  {
+   // perform the main action of the GotIPHandler in this case
+   //// ....
+    return; // if already connected, skip the rest of the steps
+  }
+
+  WiFi.mode(WIFI_STA);
   // WiFi.enableInsecureWEP(true); // needed since we still run WEP at home
 
-  // Don't save WiFi configuration in flash - optional
-  WiFi.persistent(false);
-  
+  // choose faster reconnect over physical device security
+  WiFi.persistent(true);
+
   for (auto station : wifisecret)
   {
     if (station.first)
     {
       wifiMulti.addAP(station.first, station.second);
-      Serial.print( station.first);
-      Serial.print( " ");
-      Serial.print( station.second);
-      Serial.println( " added");
+      Serial.print(station.first);
+      Serial.print(" ");
+      Serial.print(station.second);
+      Serial.println(" added");
     }
   }
-  WiFi.printDiag(Serial); //DEBUG
+  WiFi.printDiag(Serial); // DEBUG
 
   int n = WiFi.scanNetworks();
-  for( int i = 0; i < n; i++)
-    {
-      Serial.println(WiFi.SSID(i));
-    }
+  for (int i = 0; i < n; i++)
+  {
+    Serial.println(WiFi.SSID(i));
+  }
   wifiMulti.run();
 
   // Omit OTA stuff for now...
@@ -51,34 +77,22 @@ void wifi_setup()
 
 void wifi_handler()
 {
-  int wifistatus;
-#ifndef PLUGGEDIN
-  if( sensing && wifi_disconnected) return; // avoid WiFi actions while using A0
-  if( sensing ) {
-      Serial.println("Entering modem sleep mode");
-      WiFi.disconnect();
-      wifi_disconnected = 1;
-      WiFi.forceSleepBegin();
-      delay( 1); // supposedly required, but perhaps apocraphal
-      return;
-  }
-  if( wifi_disconnected && ! sensing) 
-
-#else  // PLUGGEDIN
-if( wifi_disconnected)
-#endif // PLUGGEDIN
-  {
-      WiFi.forceSleepWake();
-      // delay(1); // supposedly required, but perhaps apocraphal
-      wifi_disconnected = 0;
-      Serial.println("Exit modem sleep mode");
-
-      wifistatus = WiFi.status();
-
-      if ( wifistatus != WL_CONNECTED)
-      {
-        wifiMulti.run();
-      }
-  }
+  // nothing to do here, since event handlers should be handlin it
+  // No longer interested in putting WiFi to sleep while we do other actions
   // Omit OTA stuff for now...
+}
+
+void onStationConnected(const WiFiEventStationModeConnected& evt) {
+  Serial.print("Station connected to SSID: ");
+  Serial.println(evt.ssid);
+}
+
+void onStationGotIP(const WiFiEventStationModeGotIP& evt) {
+  Serial.print("Station IP assigned: ");
+  Serial.println(evt.ip.toString());
+}
+
+void onStationDisconnected(const WiFiEventStationModeDisconnected& evt) {
+  Serial.print("Station disconnected: ");
+  Serial.println(evt.reason);
 }
