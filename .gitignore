@@ -1,5 +1,7 @@
 # secrets do not go to git
 lib/secrets/*.cpp
+lib/secrets/*.sh
+
 
 *.log
 
