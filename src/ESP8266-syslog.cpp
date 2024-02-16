@@ -27,13 +27,7 @@ const char ltimestamp[] = TIMESTAMP;
 const char commit_hash[] = COMMIT_HASH;
 const char commit_comment[] = LAST_COMMIT_COMMENT;
 const char project_url[] = PROJECT_URL;
-const char projdir[] = PROJECT_DIR;
-const char branch[] = BRANCH;
-const char ltimestamp[] = TIMESTAMP;
-const char commit_hash[] = COMMIT_HASH;
-const char commit_comment[] = LAST_COMMIT_COMMENT;
-const char project_url[] = PROJECT_URL;
-String myHostname = "weather26";
+String myHostname = "amnesiac";
 unsigned long needident = 1;
 
 unsigned long currentMillis;
@@ -73,16 +67,10 @@ void setup()
 
   blink_setup();
 }
-}
+
 
 void loop()
 {
-void loop()
-{
-
-  if (needident)
-  {
-    needident = 0;
   if (needident)
   {
     needident = 0;
@@ -117,4 +105,6 @@ void TlogConnectAction()
   Log.addPrintStream(syslogStreamPtr);
 #endif
   Log.addPrintStream(std::make_shared<WebSerialStream>(webSerialStream));
+
+  Log.println("TlogConnectAction");
 }
