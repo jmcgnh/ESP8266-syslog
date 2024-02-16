@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <ESP8266WiFi.h>
 #include <blink_modl.h>
 #include <wifi_modl.h>
 #include <secretdata.h>
@@ -8,6 +9,11 @@
 #include <Wire.h>
 #include <Tlog.h>
 #include <map>
+
+IPAddress wifiIP;
+
+#include <TelnetSerialStream.h>
+TelnetSerialStream telnetSerialStream = TelnetSerialStream();
 
 #include <WebSerialStream.h>
 WebSerialStream webSerialStream = WebSerialStream();
@@ -38,8 +44,6 @@ void setup()
   Serial.setDebugOutput(true);
   Serial.println("Booting");
 
-  wifi_setup();
-
 #ifdef SYSLOG_HOST
   syslogStream.setDestination(SYSLOG_HOST);
   syslogStream.setRaw(false); // whether or not the syslog server is a modern(ish) unix.
@@ -47,6 +51,8 @@ void setup()
   syslogStream.setPort(SYSLOG_PORT);
 #endif
 #endif
+
+  wifi_setup();
 
   // Identification
   Log.println();
@@ -67,7 +73,6 @@ void setup()
 
   blink_setup();
 }
-
 
 void loop()
 {
@@ -90,6 +95,7 @@ void loop()
     Log.println(ltimestamp);
     Log.print("Project URL: ");
     Log.println(project_url);
+    Log.print(wifiIP.toString());
     Log.println();
   }
 
@@ -100,11 +106,13 @@ void loop()
 
 void TlogConnectAction()
 {
+  Log.addPrintStream(std::make_shared<TelnetSerialStream>(telnetSerialStream));
+  Log.addPrintStream(std::make_shared<WebSerialStream>(webSerialStream));
+
 #ifdef SYSLOG_HOST
   const std::shared_ptr<LOGBase> syslogStreamPtr = std::make_shared<SyslogStream>(syslogStream);
   Log.addPrintStream(syslogStreamPtr);
 #endif
-  Log.addPrintStream(std::make_shared<WebSerialStream>(webSerialStream));
 
   Log.println("TlogConnectAction");
 }

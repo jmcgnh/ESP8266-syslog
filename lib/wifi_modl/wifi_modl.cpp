@@ -6,14 +6,10 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WiFiMulti.h>
 #include <secretdata.h>
-#include <syslog_secrets.h>
 #include <map>
 
-// OTA variables
-const unsigned long OtaUpdateInterval = 10 * 60 * 1000; // 10 minutes
-unsigned long nextOtaUpdate = 0;
-
 int wifi_disconnected = 0;
+extern IPAddress wifiIP;
 
 #define PLUGGEDIN 1
 
@@ -95,6 +91,7 @@ void onStationGotIP(const WiFiEventStationModeGotIP &evt)
 {
   Serial.print("Station IP assigned: ");
   Serial.println(evt.ip.toString());
+  wifiIP = evt.ip;
 
   TlogConnectAction();
 }
