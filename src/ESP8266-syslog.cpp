@@ -112,6 +112,7 @@ void TlogConnectAction()
 #ifdef SYSLOG_HOST
   const std::shared_ptr<LOGBase> syslogStreamPtr = std::make_shared<SyslogStream>(syslogStream);
   Log.addPrintStream(syslogStreamPtr);
+  Log.println("added syslogStream");
 #endif
 
   Log.println("TlogConnectAction");
