@@ -34,6 +34,7 @@ branch = repo.active_branch.name
 
 # Get the latest commit hash
 commit_hash = repo.head.commit.hexsha
+commit_hash_short = repo.git.rev_parse(commit_hash, short=1)
 
 # Get the last commit comment
 last_commit_comment = repo.head.commit.message.strip()
@@ -44,7 +45,7 @@ project_url = repo.remotes.origin.url
 # Write to gitstatus.log
 with open("include/gitstatus.log", "w") as gitstatus_file:
     gitstatus_file.write(f'#define BRANCH "{branch}"\n')
-    gitstatus_file.write(f'#define COMMIT_HASH "{commit_hash}"\n')
+    gitstatus_file.write(f'#define COMMIT_HASH "{commit_hash_short}"\n')
     gitstatus_file.write(f'#define LAST_COMMIT_COMMENT "{last_commit_comment}"\n')
     gitstatus_file.write(f'#define PROJECT_URL "{project_url}"\n')
 
