@@ -27,6 +27,12 @@ const char ltimestamp[] = TIMESTAMP;
 const char commit_hash[] = COMMIT_HASH;
 const char commit_comment[] = LAST_COMMIT_COMMENT;
 const char project_url[] = PROJECT_URL;
+const char projdir[] = PROJECT_DIR;
+const char branch[] = BRANCH;
+const char ltimestamp[] = TIMESTAMP;
+const char commit_hash[] = COMMIT_HASH;
+const char commit_comment[] = LAST_COMMIT_COMMENT;
+const char project_url[] = PROJECT_URL;
 String myHostname = "weather26";
 unsigned long needident = 1;
 
@@ -67,10 +73,16 @@ void setup()
 
   blink_setup();
 }
+}
 
 void loop()
 {
+void loop()
+{
 
+  if (needident)
+  {
+    needident = 0;
   if (needident)
   {
     needident = 0;
