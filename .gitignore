@@ -2,8 +2,8 @@
 lib/secrets/*.cpp
 lib/secrets/*.sh
 lib/secrets/syslog_secrets.h
-gitstatus.h
-buildstatus.h
+include/gitstatus.h
+include/buildstatus.h
 
 *.log
 
