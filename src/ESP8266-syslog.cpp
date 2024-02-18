@@ -23,6 +23,9 @@ WebSerialStream webSerialStream = WebSerialStream();
 SyslogStream syslogStream = SyslogStream();
 #endif
 
+// forward declaratoin
+void TlogConnectAction();
+
 // Identification
 
 const char vfname[] = __FILE__;
@@ -102,18 +105,20 @@ void loop()
   currentMillis = millis();
   wifi_handler();
   blink_handler();
+  Log.loop();
 }
 
 void TlogConnectAction()
 {
+  Log.println("TlogConnectAction start");
   Log.addPrintStream(std::make_shared<TelnetSerialStream>(telnetSerialStream));
   Log.addPrintStream(std::make_shared<WebSerialStream>(webSerialStream));
 
 #ifdef SYSLOG_HOST
+  // syslogStream.begin();
   const std::shared_ptr<LOGBase> syslogStreamPtr = std::make_shared<SyslogStream>(syslogStream);
   Log.addPrintStream(syslogStreamPtr);
   Log.println("added syslogStream");
 #endif
-
-  Log.println("TlogConnectAction");
+  Log.begin();
 }

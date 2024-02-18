@@ -39,10 +39,11 @@ void wifi_setup()
 
   if (wifistatus == WL_CONNECTED)
   {
+    Serial.println("wifisetup found wifi already connected");
     TlogConnectAction();
     return; // if already connected, skip the rest of the steps
   }
-
+  Serial.println("wifisetup found wifi NOT already connected");
   WiFi.mode(WIFI_STA);
   // WiFi.enableInsecureWEP(true); // no longer exlusively running WEP at home
 
