@@ -42,7 +42,7 @@ void blink_handler()
             if (blinkSeq[ledSeqPos] == 0)
                 {
                     ledSeqPos = 0;
-                    needident = 1;
+                    // needident = 1;
                 }
         }
 

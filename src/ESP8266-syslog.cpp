@@ -38,6 +38,8 @@ const char commit_comment[] = LAST_COMMIT_COMMENT;
 const char project_url[] = PROJECT_URL;
 String myHostname = "amnesiac";
 unsigned long needident = 1;
+unsigned long identInterval = (5 * 60 * 1000); // 5 minutes
+unsigned long nextIdent = 0;
 
 unsigned long currentMillis;
 
@@ -79,6 +81,12 @@ void setup()
 
 void loop()
 {
+  currentMillis = millis();
+  if (currentMillis > nextIdent)
+  {
+    needident = 1;
+    nextIdent = currentMillis + identInterval;
+  }
   if (needident)
   {
     needident = 0;
@@ -102,7 +110,6 @@ void loop()
     Log.println();
   }
 
-  currentMillis = millis();
   wifi_handler();
   blink_handler();
   Log.loop();
